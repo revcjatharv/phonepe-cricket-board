@@ -9,18 +9,7 @@ public class App {
         int team2TotalScore = 0;
 
         for (int i = 0; i < playerDetailsList1.size(); i++) {
-            System.out.println("==========");
-            System.out.println(playerDetailsList1.get(i).getPlayerName());
-            System.out.println(playerDetailsList1.get(i).getExtras());
-            System.out.println(playerDetailsList1.get(i).getBallsPlayed());
-            System.out.println(playerDetailsList1.get(i).getSixHits());
-            System.out.println(playerDetailsList1.get(i).getFourHits());
-            System.out.println(playerDetailsList1.get(i).isOnStrike());
-            System.out.println(playerDetailsList1.get(i).isWicketDown());
-            System.out.println(playerDetailsList1.get(i).isOnField());
-            System.out.println(playerDetailsList1.get(i).getTotalRuns());
             team2TotalScore = team2TotalScore+playerDetailsList1.get(i).getTotalRuns();
-            System.out.println("==========");
         }
 
         return team2TotalScore;
@@ -32,9 +21,6 @@ public class App {
         int onFieldRemaingPlayer = 0;
         for (int i = 0; i < playerDetails.size(); i++) {
             onStrikePlayer = playerDetails.get(i);
-            System.out.println(i);
-            System.out.println(onStrikePlayer.getPlayerName());
-            System.out.println(onStrikePlayer.isOnStrike());
             if(onStrikePlayer.isOnStrike() == true && onStrikePlayer.isWicketDown() == false){
                 onStrikerIndex = i;
             }
@@ -45,20 +31,37 @@ public class App {
         return new int[] {onStrikerIndex, onFieldRemaingPlayer};
     }
 
+    public static void printPlayerDetails(ArrayList<PlayerDetails> playerDetails, int overNumber, String team){
+        System.out.println("Scorecard for "+ team);
+        String header = "PlayerName  |  Score  |  4s  |  6s  |  Balls  ";
+        System.out.println(header+"\n");
+        PlayerDetails currPlayer;
+        String scoreboard = "";
+        int totalRun = 0;
+        int totalWicket = 0;
+        for (int i = 0; i < playerDetails.size(); i++) {
+
+            currPlayer = playerDetails.get(i);
+            totalWicket = totalWicket + (currPlayer.isWicketDown() ? 1: 0);
+            totalRun = totalRun + currPlayer.getTotalRuns();
+            scoreboard = currPlayer.getPlayerName() + "  |  "+currPlayer.getTotalRuns() + "  |  "+currPlayer.getFourHits() + "  |  "+currPlayer.getSixHits() + "  |  "+currPlayer.getBallsPlayed() ;
+            System.out.println(scoreboard+"\n");
+        }
+        System.out.println("Overs: "+ String.valueOf(overNumber+1)+"\n");
+        System.out.println("Total: "+ String.valueOf(totalRun)+" / "+String.valueOf(totalWicket));
+    }
+
     public static ArrayList<PlayerDetails> playTeam1(int noOfPlayer, int noOfOvers){
         Scanner sc = new Scanner(System.in);
         Constant constant = new Constant();
 
         System.out.println("Enter the batting order of team 1");
-
         // Add Player names to a array
         ArrayList<String> team1 = new ArrayList<String>();
         for (int i = 1; i <= noOfPlayer; i++) {
             System.out.println("Enter player name: " + String.valueOf(i));
             team1.add(sc.next());
         }
-        System.out.println(team1.get(0));
-        System.out.println(team1.get(1));
 
         // Add Over details
         int currentPlayerOrder = 0; // top two player will play
@@ -81,17 +84,14 @@ public class App {
         playerDetailsList1.add(player1);
         playerDetailsList1.add(player2);
         for (int i = 1; i <= noOfOvers; i++) {
-            System.out.println("Enter Over no. " + String.valueOf(i) + " Details");
-
             if(isTeamOut){
-                System.out.println("Team is all out.+2");
                 break;
             }
             int totalOverBalls = 6;
             for (int j = 1; j <= totalOverBalls; j++) {
                 System.out.println("Please enter the run scored");
                 int run = sc.nextInt();
-                System.out.println("Please enter if ball is a valid delivery possible options are ['NORMAL', 'WICKET', 'NO BALL', 'WIDE']");
+                System.out.println("Please enter if ball is a valid delivery possible options are ['NORMAL', 'WICKET', 'NO', 'WIDE']");
                 String status = sc.next();
 
                 if(status.equals(constant.WICKET)){
@@ -103,13 +103,13 @@ public class App {
                     playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
                     wicketDown.add(onStrikePlayerIndex[0]);
                     if(team1.size()==0){
-                        System.out.println("Team is all out+1");
                         isTeamOut = true;
                         break;
                     }
                     playerX.setOnStrike(true);
                     playerX.setOnField(true);
                     playerX.setPlayerName(team1.get(0));
+                    team1.remove(0);
                     playerDetailsList1.add(playerX);
                 } else if (status.equals(constant.NO_BALL)){
                     totalOverBalls = totalOverBalls +1;
@@ -126,8 +126,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==2){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -147,8 +145,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==4){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -170,8 +166,6 @@ public class App {
 
                     } else if (run ==6){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -196,8 +190,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==2){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -217,8 +209,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==4){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -240,8 +230,6 @@ public class App {
 
                     } else if (run ==6){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -265,8 +253,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==2){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -285,8 +271,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==4){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -306,8 +290,6 @@ public class App {
 
                     } else if (run ==6){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -323,6 +305,7 @@ public class App {
                 }
 
             }
+            printPlayerDetails(playerDetailsList1, i, "TEAM-1");
         }
         return playerDetailsList1;
     }
@@ -338,9 +321,6 @@ public class App {
             System.out.println("Enter player name: " + String.valueOf(i));
             team1.add(sc.next());
         }
-        System.out.println(team1.get(0));
-        System.out.println(team1.get(1));
-
         // Add Over details
         int currentPlayerOrder = 0; // top two player will play
         boolean isTeamOut = false;
@@ -362,17 +342,14 @@ public class App {
         playerDetailsList1.add(player1);
         playerDetailsList1.add(player2);
         for (int i = 1; i <= noOfOvers; i++) {
-            System.out.println("Enter Over no. " + String.valueOf(i) + " Details");
-
             if(isTeamOut){
-                System.out.println("Team is all out.+2");
                 break;
             }
             int totalOverBalls = 6;
             for (int j = 1; j <= totalOverBalls; j++) {
                 System.out.println("Please enter the run scored");
                 int run = sc.nextInt();
-                System.out.println("Please enter if ball is a valid delivery possible options are ['NORMAL', 'WICKET', 'NO BALL', 'WIDE']");
+                System.out.println("Please enter if ball is a valid delivery possible options are ['NORMAL', 'WICKET', 'NO', 'WIDE']");
                 String status = sc.next();
                 if(status.equals(constant.WICKET)){
                     int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
@@ -383,13 +360,13 @@ public class App {
                     playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
                     wicketDown.add(onStrikePlayerIndex[0]);
                     if(team1.size()==0){
-                        System.out.println("Team is all out+1");
                         isTeamOut = true;
                         break;
                     }
                     playerX.setOnStrike(true);
                     playerX.setOnField(true);
                     playerX.setPlayerName(team1.get(0));
+                    team1.remove(0);
                     playerDetailsList1.add(playerX);
                 } else if (status.equals(constant.NO_BALL)){
                     totalOverBalls = totalOverBalls +1;
@@ -406,7 +383,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==2){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
 
                         //store run in the non striker boy
                         // setting for playing player now
@@ -427,7 +403,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==4){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
 
                         //store run in the non striker boy
                         // setting for playing player now
@@ -450,8 +425,6 @@ public class App {
 
                     } else if (run ==6){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -476,8 +449,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==2){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -497,8 +468,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==4){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -520,8 +489,6 @@ public class App {
 
                     } else if (run ==6){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -545,8 +512,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==2){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -565,8 +530,6 @@ public class App {
                         playerDetailsList1.get(nonStrikerIndex).setOnStrike(true);
                     } else if (run ==4){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
                         //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
@@ -586,9 +549,7 @@ public class App {
 
                     } else if (run ==6){
                         int [] onStrikePlayerIndex = getCurrentStrikePlayer(playerDetailsList1);
-                        System.out.println(playerDetailsList1.get(onStrikePlayerIndex[0]).getPlayerName());
-
-                        //store run in the non striker boy
+                       //store run in the non striker boy
                         // setting for playing player now
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setBallsPlayed(playerDetailsList1.get(onStrikePlayerIndex[0]).getBallsPlayed() + 1);
                         playerDetailsList1.get(onStrikePlayerIndex[0]).setTotalRuns(playerDetailsList1.get(onStrikePlayerIndex[0]).getTotalRuns()+run);
@@ -608,6 +569,8 @@ public class App {
                 }
 
             }
+            printPlayerDetails(playerDetailsList1, i,"TEAM-2");
+
         }
 
 
@@ -637,41 +600,21 @@ public class App {
         ArrayList<PlayerDetails> team1 = playTeam1(noOfPlayer, noOfOvers);
 
         for (int i = 0; i < team1.size(); i++) {
-            System.out.println("========== TEAM1");
-            System.out.println(team1.get(i).getPlayerName());
-            System.out.println(team1.get(i).getExtras());
-            System.out.println(team1.get(i).getBallsPlayed());
-            System.out.println(team1.get(i).getSixHits());
-            System.out.println(team1.get(i).getFourHits());
-            System.out.println(team1.get(i).isOnStrike());
-            System.out.println(team1.get(i).isWicketDown());
-            System.out.println(team1.get(i).isOnField());
-            System.out.println(team1.get(i).getTotalRuns());
             team1TotalScore = team1TotalScore+team1.get(i).getTotalRuns();
-            System.out.println("========== TEAM1");
         }
 
 
         ArrayList<PlayerDetails> team2 = playTeam2(noOfPlayer, noOfOvers, team1TotalScore);
         for (int i = 0; i < team2.size(); i++) {
-            System.out.println("========== TEAM1");
-            System.out.println(team2.get(i).getPlayerName());
-            System.out.println(team2.get(i).getExtras());
-            System.out.println(team2.get(i).getBallsPlayed());
-            System.out.println(team2.get(i).getSixHits());
-            System.out.println(team2.get(i).getFourHits());
-            System.out.println(team2.get(i).isOnStrike());
-            System.out.println(team2.get(i).isWicketDown());
-            System.out.println(team2.get(i).isOnField());
-            System.out.println(team2.get(i).getTotalRuns());
             team2TotalScore = team2TotalScore+team2.get(i).getTotalRuns();
-            System.out.println("========== TEAM1");
         }
 
 
         if(team2TotalScore > team1TotalScore){
             System.out.println("Team 2 Won by Team 1 by : "+ String.valueOf(team2TotalScore - team1TotalScore));
-        } else {
+        } else if (team2TotalScore == team1TotalScore){
+            System.out.println("Team 2 Draw with Team 1");
+        }else {
             System.out.println("Team 1 Won by Team 2 by : "+ String.valueOf(team1TotalScore - team2TotalScore));
         }
 
