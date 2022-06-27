@@ -18,5 +18,6 @@ Steps to play cricketboard
 5. Once filled for whole over the scorecard will reflect 
 6. After Team1 is done playing team2 will start the games with same above metioned rule
 7. Once team2 exceed the Team1 target program will print the Winner
+8. If its a wicket ball it does not matter what run you have entred it will still fall to 0 and the upcoming player will always come on strike
 
 
